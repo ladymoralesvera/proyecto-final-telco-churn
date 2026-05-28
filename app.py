@@ -225,7 +225,7 @@ elif menu == "Visualizaciones":
         title="Antigüedad de Clientes"
     )
 
-    st.plotly_chart(
-        fig4,
-        use_container_width=True
-    )se_container_width=True)
+st.plotly_chart(
+    fig4,
+    use_container_width=True
+)
