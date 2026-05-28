@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 
 # ------------------------------------------------
-# CONFIGURACIÓN
+# CONFIGURACIÓN GENERAL
 # ------------------------------------------------
 
 st.set_page_config(
@@ -16,33 +16,31 @@ st.set_page_config(
 # CARGA DE DATOS
 # ------------------------------------------------
 
-@st.cache_data
-def cargar_datos():
-    df = pd.read_csv(
-        "WA_Fn-UseC_-Telco-Customer-Churn.csv"
-    )
+df = pd.read_csv("WA_Fn-UseC_-Telco-Customer-Churn.csv")
 
-    # Convertir TotalCharges
-    df["TotalCharges"] = pd.to_numeric(
-        df["TotalCharges"],
-        errors="coerce"
-    )
+# ------------------------------------------------
+# LIMPIEZA BÁSICA
+# ------------------------------------------------
 
-    return df
+df["TotalCharges"] = pd.to_numeric(
+    df["TotalCharges"],
+    errors="coerce"
+)
 
-df = cargar_datos()
+df = df.dropna()
 
 # ------------------------------------------------
 # SIDEBAR
 # ------------------------------------------------
 
-st.sidebar.title("📡 ISP Analytics Dashboard")
+st.sidebar.title("📡 Menú Principal")
 
 menu = st.sidebar.radio(
-    "Menú",
+    "Seleccione una opción:",
     [
         "Inicio",
-        "Exploración",
+        "Exploración de Datos",
+        "KPIs",
         "Visualizaciones"
     ]
 )
@@ -53,94 +51,46 @@ menu = st.sidebar.radio(
 
 if menu == "Inicio":
 
-    st.title(
-        "📡 Predicción de Abandono de Clientes ISP"
+    st.title("📡 ISP Analytics Dashboard")
+
+    st.subheader(
+        "Predicción de abandono de clientes en empresas proveedoras de Internet"
     )
 
-    st.markdown("""
-    Aplicación desarrollada para analizar
-    información de clientes de empresas
-    proveedoras de Internet y detectar
-    factores asociados al abandono
-    del servicio.
+    st.markdown("---")
+
+    st.write("""
+    ### Proyecto Final Integrador
+
+    Esta aplicación permite:
+
+    ✅ Explorar información de clientes ISP  
+    ✅ Analizar métricas de abandono (Churn)  
+    ✅ Visualizar patrones de comportamiento  
+    ✅ Identificar factores asociados a cancelaciones  
+    ✅ Apoyar decisiones estratégicas en soporte técnico y atención al cliente
     """)
 
-    # KPIs
-
-    total_clientes = len(df)
-
-    clientes_activos = len(
-        df[df["Churn"] == "No"]
-    )
-
-    clientes_perdidos = len(
-        df[df["Churn"] == "Yes"]
-    )
-
-    tasa_abandono = (
-        clientes_perdidos /
-        total_clientes
-    ) * 100
-
-    promedio_facturacion = round(
-        df["MonthlyCharges"].mean(),
-        2
-    )
-
-    antiguedad_promedio = round(
-        df["tenure"].mean(),
-        1
-    )
-
-    col1, col2, col3 = st.columns(3)
-
-    col1.metric(
-        "👥 Total Clientes",
-        total_clientes
-    )
-
-    col2.metric(
-        "🟢 Clientes Activos",
-        clientes_activos
-    )
-
-    col3.metric(
-        "🔴 Clientes Perdidos",
-        clientes_perdidos
-    )
-
-    col4, col5 = st.columns(2)
-
-    col4.metric(
-        "📉 Tasa de Abandono",
-        f"{tasa_abandono:.2f}%"
-    )
-
-    col5.metric(
-        "💰 Facturación Promedio",
-        f"${promedio_facturacion}"
-    )
-
-    st.metric(
-        "📆 Antigüedad Promedio",
-        f"{antiguedad_promedio} meses"
-    )
+    st.info("Aplicación creada por Lady Morales Vera")
 
 # ------------------------------------------------
-# EXPLORACIÓN
+# EXPLORACIÓN DE DATOS
 # ------------------------------------------------
 
-elif menu == "Exploración":
+elif menu == "Exploración de Datos":
 
-    st.title("📊 Exploración del Dataset")
+    st.title("📊 Exploración de Datos")
 
-    st.subheader("Vista previa")
+    st.subheader("Vista general del dataset")
 
-    st.dataframe(df.head())
+    st.dataframe(df)
 
-    st.subheader("Dimensiones")
+    st.subheader("Dimensiones del dataset")
 
-    st.write(df.shape)
+    filas, columnas = df.shape
+
+    st.write(f"Filas: {filas}")
+    st.write(f"Columnas: {columnas}")
 
     st.subheader("Tipos de datos")
 
@@ -150,9 +100,56 @@ elif menu == "Exploración":
 
     st.dataframe(df.isnull().sum())
 
-    st.subheader("Estadísticas")
+# ------------------------------------------------
+# KPIs
+# ------------------------------------------------
 
-    st.dataframe(df.describe())
+elif menu == "KPIs":
+
+    st.title("📌 Indicadores Clave")
+
+    total_clientes = df.shape[0]
+
+    clientes_churn = df[df["Churn"] == "Yes"].shape[0]
+
+    porcentaje_churn = (
+        clientes_churn / total_clientes
+    ) * 100
+
+    promedio_facturacion = df["MonthlyCharges"].mean()
+
+    promedio_antiguedad = df["tenure"].mean()
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        st.metric(
+            "Total Clientes",
+            total_clientes
+        )
+
+        st.metric(
+            "Clientes que abandonaron",
+            clientes_churn
+        )
+
+    with col2:
+
+        st.metric(
+            "Porcentaje Churn",
+            f"{porcentaje_churn:.2f}%"
+        )
+
+        st.metric(
+            "Promedio Facturación",
+            f"${promedio_facturacion:.2f}"
+        )
+
+    st.metric(
+        "Promedio Antigüedad",
+        f"{promedio_antiguedad:.2f} meses"
+    )
 
 # ------------------------------------------------
 # VISUALIZACIONES
@@ -161,8 +158,6 @@ elif menu == "Exploración":
 elif menu == "Visualizaciones":
 
     st.title("📈 Visualizaciones")
-
-    # FILTRO
 
     contrato = st.selectbox(
         "Seleccione tipo de contrato",
@@ -173,7 +168,9 @@ elif menu == "Visualizaciones":
         df["Contract"] == contrato
     ]
 
+    # ------------------------------------------------
     # GRÁFICO 1
+    # ------------------------------------------------
 
     fig1 = px.pie(
         df_filtrado,
@@ -186,7 +183,9 @@ elif menu == "Visualizaciones":
         use_container_width=True
     )
 
+    # ------------------------------------------------
     # GRÁFICO 2
+    # ------------------------------------------------
 
     fig2 = px.histogram(
         df,
@@ -201,7 +200,9 @@ elif menu == "Visualizaciones":
         use_container_width=True
     )
 
+    # ------------------------------------------------
     # GRÁFICO 3
+    # ------------------------------------------------
 
     fig3 = px.box(
         df,
@@ -216,7 +217,9 @@ elif menu == "Visualizaciones":
         use_container_width=True
     )
 
+    # ------------------------------------------------
     # GRÁFICO 4
+    # ------------------------------------------------
 
     fig4 = px.histogram(
         df,
@@ -225,18 +228,7 @@ elif menu == "Visualizaciones":
         title="Antigüedad de Clientes"
     )
 
-st.plotly_chart(
-    fig4,
-    use_container_width=True
-)
-fig4 = px.histogram(
-    df,
-    x="tenure",
-    color="Churn",
-    title="Antigüedad de Clientes"
-)
-
-st.plotly_chart(
-    fig4,
-    use_container_width=True
-)
+    st.plotly_chart(
+        fig4,
+        use_container_width=True
+    )
