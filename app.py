@@ -229,3 +229,14 @@ st.plotly_chart(
     fig4,
     use_container_width=True
 )
+fig4 = px.histogram(
+    df,
+    x="tenure",
+    color="Churn",
+    title="Antigüedad de Clientes"
+)
+
+st.plotly_chart(
+    fig4,
+    use_container_width=True
+)
