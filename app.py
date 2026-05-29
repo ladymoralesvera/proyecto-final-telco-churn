@@ -165,25 +165,19 @@ elif menu == "KPIs":
 
 elif menu == "Visualizaciones":
 
-    st.title("📈 Visualizaciones")
+    st.title("📊 Visualizaciones")
 
-    contrato = st.selectbox(
-        "Seleccione tipo de contrato",
-        df["Contract"].unique()
-    )
+    # --------------------------------------------
+    # CHURN
+    # --------------------------------------------
 
-    df_filtrado = df[
-        df["Contract"] == contrato
-    ]
+    st.subheader("Clientes con abandono")
 
-    # ------------------------------------------------
-    # GRÁFICO 1
-    # ------------------------------------------------
-
-    fig1 = px.pie(
-        df_filtrado,
-        names="Churn",
-        title="Distribución de Churn"
+    fig1 = px.histogram(
+        df,
+        x="Churn",
+        color="Churn",
+        title="Distribución de abandono"
     )
 
     st.plotly_chart(
@@ -191,16 +185,17 @@ elif menu == "Visualizaciones":
         use_container_width=True
     )
 
-    # ------------------------------------------------
-    # GRÁFICO 2
-    # ------------------------------------------------
+    # --------------------------------------------
+    # CONTRATOS
+    # --------------------------------------------
+
+    st.subheader("Tipos de contrato")
 
     fig2 = px.histogram(
         df,
-        x="InternetService",
-        color="Churn",
-        title="Churn según Servicio de Internet",
-        barmode="group"
+        x="Contract",
+        color="Contract",
+        title="Distribución por contrato"
     )
 
     st.plotly_chart(
@@ -208,16 +203,18 @@ elif menu == "Visualizaciones":
         use_container_width=True
     )
 
-    # ------------------------------------------------
-    # GRÁFICO 3
-    # ------------------------------------------------
+    # --------------------------------------------
+    # CARGOS MENSUALES
+    # --------------------------------------------
+
+    st.subheader("Facturación mensual")
 
     fig3 = px.box(
         df,
         x="Churn",
         y="MonthlyCharges",
         color="Churn",
-        title="Facturación Mensual vs Churn"
+        title="Facturación mensual vs abandono"
     )
 
     st.plotly_chart(
@@ -225,38 +222,53 @@ elif menu == "Visualizaciones":
         use_container_width=True
     )
 
-    # ------------------------------------------------
-    # GRÁFICO 4
-    # ------------------------------------------------
+    # --------------------------------------------
+    # ANTIGÜEDAD
+    # --------------------------------------------
+
+    st.subheader("Antigüedad del cliente")
 
     fig4 = px.histogram(
         df,
         x="tenure",
         color="Churn",
-        title="Antigüedad de Clientes"
+        nbins=30,
+        title="Antigüedad de clientes"
     )
 
     st.plotly_chart(
         fig4,
         use_container_width=True
     )
-    # ------------------------------------------------
-    # MATRIZ DE CORRELACIÓN
-    # ------------------------------------------------
 
-    st.subheader("📊 Matriz de Correlación")
+    # --------------------------------------------
+    # MATRIZ DE CORRELACIÓN
+    # --------------------------------------------
+
+    st.subheader("📌 Matriz de Correlación")
 
     try:
 
         df_corr = df.copy()
 
+        # Convertir TotalCharges
+
+        df_corr["TotalCharges"] = pd.to_numeric(
+            df_corr["TotalCharges"],
+            errors="coerce"
+        )
+
+        df_corr.dropna(inplace=True)
+
+        # Codificar columnas categóricas
+
         columnas_categoricas = df_corr.select_dtypes(
             include=["object"]
         ).columns
 
-        encoder = LabelEncoder()
-
         for col in columnas_categoricas:
+
+            encoder = LabelEncoder()
 
             df_corr[col] = encoder.fit_transform(
                 df_corr[col].astype(str)
@@ -276,8 +288,8 @@ elif menu == "Visualizaciones":
 
     except Exception as e:
 
-        st.error(f"Error en correlación: {e}") 
-    # ------------------------------------------------
+        st.error(f"Error en correlación: {e}")
+# ------------------------------------------------
 # MACHINE LEARNING
 # ------------------------------------------------
 
