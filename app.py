@@ -115,10 +115,6 @@ factores asociados al churn de clientes.
 # EXPLORACIÓN DE DATOS
 # ------------------------------------------------
 
-# ------------------------------------------------
-# EXPLORACIÓN DE DATOS
-# ------------------------------------------------
-
 elif menu == "Exploración de Datos":
 
     st.title("📊 Exploración de Datos")
@@ -146,6 +142,57 @@ elif menu == "Exploración de Datos":
         (df["InternetService"].isin(internet_filtro))
     ]
 
+    # --------------------------------------------
+    # VISTA PREVIA
+    # --------------------------------------------
+
+    st.subheader("📄 Vista previa del dataset")
+
+    st.dataframe(
+        df_filtrado.head(20)
+    )
+
+    # --------------------------------------------
+    # DESCARGA CSV
+    # --------------------------------------------
+
+    csv = df_filtrado.to_csv(
+        index=False
+    ).encode("utf-8")
+
+    st.download_button(
+        label="📥 Descargar reporte CSV",
+        data=csv,
+        file_name="reporte_telco_churn.csv",
+        mime="text/csv"
+    )
+
+    # --------------------------------------------
+    # DIMENSIONES
+    # --------------------------------------------
+
+    st.subheader("📏 Dimensiones del dataset")
+
+    filas, columnas = df.shape
+
+    st.write(f"Filas: {filas}")
+    st.write(f"Columnas: {columnas}")
+
+    # --------------------------------------------
+    # TIPOS DE DATOS
+    # --------------------------------------------
+
+    st.subheader("🧩 Tipos de datos")
+
+    st.dataframe(df.dtypes)
+
+    # --------------------------------------------
+    # VALORES NULOS
+    # --------------------------------------------
+
+    st.subheader("⚠️ Valores nulos")
+
+    st.dataframe(df.isnull().sum())
     # --------------------------------------------
     # DATASET
     # --------------------------------------------
