@@ -115,29 +115,73 @@ factores asociados al churn de clientes.
 # EXPLORACIÓN DE DATOS
 # ------------------------------------------------
 
+# ------------------------------------------------
+# EXPLORACIÓN DE DATOS
+# ------------------------------------------------
+
 elif menu == "Exploración de Datos":
 
     st.title("📊 Exploración de Datos")
 
-    st.subheader("Vista general del dataset")
+    # --------------------------------------------
+    # FILTROS
+    # --------------------------------------------
 
-    st.dataframe(df)
+    st.subheader("📌 Filtros dinámicos")
 
-    st.subheader("Dimensiones del dataset")
+    contrato_filtro = st.multiselect(
+        "Seleccione tipo de contrato",
+        options=df["Contract"].unique(),
+        default=df["Contract"].unique()
+    )
+
+    internet_filtro = st.multiselect(
+        "Seleccione servicio de Internet",
+        options=df["InternetService"].unique(),
+        default=df["InternetService"].unique()
+    )
+
+    df_filtrado = df[
+        (df["Contract"].isin(contrato_filtro)) &
+        (df["InternetService"].isin(internet_filtro))
+    ]
+
+    # --------------------------------------------
+    # DATASET
+    # --------------------------------------------
+
+    st.subheader("📄 Vista previa del dataset")
+
+    st.dataframe(
+        df_filtrado.head(20)
+    )
+
+    # --------------------------------------------
+    # DIMENSIONES
+    # --------------------------------------------
+
+    st.subheader("📏 Dimensiones del dataset")
 
     filas, columnas = df.shape
 
     st.write(f"Filas: {filas}")
     st.write(f"Columnas: {columnas}")
 
-    st.subheader("Tipos de datos")
+    # --------------------------------------------
+    # TIPOS DE DATOS
+    # --------------------------------------------
+
+    st.subheader("🧩 Tipos de datos")
 
     st.dataframe(df.dtypes)
 
-    st.subheader("Valores nulos")
+    # --------------------------------------------
+    # VALORES NULOS
+    # --------------------------------------------
+
+    st.subheader("⚠️ Valores nulos")
 
     st.dataframe(df.isnull().sum())
-
 # ------------------------------------------------
 # KPIs
 # ------------------------------------------------
