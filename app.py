@@ -70,32 +70,38 @@ menu = st.sidebar.radio(
 
 if menu == "Inicio":
 
-    st.title("📡 ISP Analytics Dashboard")
-    st.image(
-        "https://images.unsplash.com/photo-1521791136064-7986c2920216",
-         width=300
+    st.markdown(
+        "<h1 style='text-align: center; color: #003366;'>📡 ISP Analytics Dashboard</h1>",
+        unsafe_allow_html=True
     )
 
-    st.subheader(
-        "Predicción de abandono de clientes en empresas proveedoras de Internet"
+    st.markdown(
+        "<h4 style='text-align: center;'>Predicción de abandono de clientes en empresas proveedoras de Internet</h4>",
+        unsafe_allow_html=True
     )
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+
+    with col2:
+
+        st.image(
+            "https://images.unsplash.com/photo-1521791136064-7986c2920216",
+            width=300
+        )
 
     st.markdown("---")
 
     st.write("""
-    ### Proyecto Final Integrador
+    ## Proyecto Final Integrador
 
-    Esta aplicación permite:
+    Aplicación desarrollada en Streamlit para el análisis
+    de clientes ISP y predicción de abandono utilizando
+    técnicas de Ciencia de Datos y Machine Learning.
 
-    ✅ Explorar información de clientes ISP  
-    ✅ Analizar métricas de abandono (Churn)  
-    ✅ Visualizar patrones de comportamiento  
-    ✅ Identificar factores asociados a cancelaciones  
-    ✅ Apoyar decisiones estratégicas en soporte técnico y atención al cliente
+    El sistema permite explorar información,
+    visualizar métricas relevantes y analizar
+    factores asociados al churn de clientes.
     """)
-
-    st.info("Aplicación creada por Lady Morales Vera")
-
 # ------------------------------------------------
 # EXPLORACIÓN DE DATOS
 # ------------------------------------------------
