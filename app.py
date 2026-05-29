@@ -245,54 +245,78 @@ elif menu == "Visualizaciones":
 # MACHINE LEARNING
 # ------------------------------------------------
 
+# ------------------------------------------------
+# MACHINE LEARNING
+# ------------------------------------------------
+
 elif menu == "Machine Learning":
 
     st.title("🤖 Modelo Predictivo de Churn")
 
     st.write("""
-    En esta sección se implementa un modelo de Machine Learning
-    utilizando Random Forest para predecir abandono de clientes.
+    Modelo de Machine Learning orientado a la predicción
+    de abandono de clientes en empresas proveedoras
+    de Internet.
     """)
 
-    # Copia del dataset
+    # --------------------------------------------
+    # COPIA DEL DATASET
+    # --------------------------------------------
 
     df_ml = df.copy()
 
-    # Eliminar columna customerID
+    # --------------------------------------------
+    # ELIMINAR customerID
+    # --------------------------------------------
 
     if "customerID" in df_ml.columns:
-        df_ml = df_ml.drop("customerID", axis=1)
+        df_ml.drop(
+            columns=["customerID"],
+            inplace=True
+        )
 
-    # Convertir TotalCharges a numérico
+    # --------------------------------------------
+    # LIMPIAR TotalCharges
+    # --------------------------------------------
 
     df_ml["TotalCharges"] = pd.to_numeric(
         df_ml["TotalCharges"],
         errors="coerce"
     )
 
-    # Eliminar nulos
+    # --------------------------------------------
+    # ELIMINAR NULOS
+    # --------------------------------------------
 
-    df_ml = df_ml.dropna()
+    df_ml.dropna(inplace=True)
 
-    # Codificar variables categóricas
+    # --------------------------------------------
+    # CONVERTIR VARIABLES CATEGÓRICAS
+    # --------------------------------------------
 
-    le = LabelEncoder()
+    columnas_categoricas = df_ml.select_dtypes(
+        include=["object"]
+    ).columns
 
-    for col in df_ml.columns:
+    for col in columnas_categoricas:
 
-        if df_ml[col].dtype == "object":
+        encoder = LabelEncoder()
 
-            df_ml[col] = le.fit_transform(
-                df_ml[col]
-            )
+        df_ml[col] = encoder.fit_transform(
+            df_ml[col].astype(str)
+        )
 
-    # Variables predictoras y objetivo
+    # --------------------------------------------
+    # VARIABLES X e y
+    # --------------------------------------------
 
     X = df_ml.drop("Churn", axis=1)
 
     y = df_ml["Churn"]
 
-    # División entrenamiento y prueba
+    # --------------------------------------------
+    # DIVISIÓN TRAIN TEST
+    # --------------------------------------------
 
     X_train, X_test, y_train, y_test = train_test_split(
         X,
@@ -301,6 +325,81 @@ elif menu == "Machine Learning":
         random_state=42
     )
 
+    # --------------------------------------------
+    # MODELO
+    # --------------------------------------------
+
+    modelo = RandomForestClassifier(
+        n_estimators=100,
+        random_state=42
+    )
+
+    modelo.fit(X_train, y_train)
+
+    # --------------------------------------------
+    # PREDICCIONES
+    # --------------------------------------------
+
+    y_pred = modelo.predict(X_test)
+
+    # --------------------------------------------
+    # ACCURACY
+    # --------------------------------------------
+
+    accuracy = accuracy_score(
+        y_test,
+        y_pred
+    )
+
+    st.subheader("📌 Precisión del modelo")
+
+    st.success(
+        f"Accuracy obtenido: {accuracy:.2f}"
+    )
+
+    # --------------------------------------------
+    # IMPORTANCIA VARIABLES
+    # --------------------------------------------
+
+    importancia = pd.DataFrame({
+
+        "Variable": X.columns,
+
+        "Importancia": modelo.feature_importances_
+
+    })
+
+    importancia = importancia.sort_values(
+        by="Importancia",
+        ascending=False
+    )
+
+    st.subheader("📊 Variables más importantes")
+
+    fig_ml = px.bar(
+        importancia.head(10),
+        x="Importancia",
+        y="Variable",
+        orientation="h",
+        title="Top 10 variables más importantes"
+    )
+
+    st.plotly_chart(
+        fig_ml,
+        use_container_width=True
+    )
+
+    # --------------------------------------------
+    # INTERPRETACIÓN
+    # --------------------------------------------
+
+    st.info("""
+    El modelo Random Forest permite identificar
+    factores críticos asociados al abandono
+    de clientes, apoyando procesos de soporte
+    técnico, fidelización y toma de decisiones
+    estratégicas en empresas ISP.
+    """)
     # Modelo Random Forest
 
     modelo = RandomForestClassifier(
