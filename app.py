@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
 
 # ------------------------------------------------
 # CONFIGURACIÓN GENERAL
@@ -233,3 +237,94 @@ elif menu == "Visualizaciones":
         fig4,
         use_container_width=True
     )
+    # ------------------------------------------------
+# MACHINE LEARNING
+# ------------------------------------------------
+
+elif menu == "Machine Learning":
+
+    st.title("🤖 Modelo Predictivo de Churn")
+
+    st.write("""
+    En esta sección se implementa un modelo de Machine Learning
+    utilizando Random Forest para predecir abandono de clientes.
+    """)
+
+    # Copia del dataset
+
+    df_ml = df.copy()
+
+    # Codificación de variables categóricas
+
+    le = LabelEncoder()
+
+    for col in df_ml.columns:
+        if df_ml[col].dtype == "object":
+            df_ml[col] = le.fit_transform(df_ml[col])
+
+    # Variables predictoras y objetivo
+
+    X = df_ml.drop("Churn", axis=1)
+    y = df_ml["Churn"]
+
+    # División entrenamiento/prueba
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X,
+        y,
+        test_size=0.2,
+        random_state=42
+    )
+
+    # Modelo Random Forest
+
+    modelo = RandomForestClassifier(
+        n_estimators=100,
+        random_state=42
+    )
+
+    modelo.fit(X_train, y_train)
+
+    # Predicciones
+
+    y_pred = modelo.predict(X_test)
+
+    # Accuracy
+
+    accuracy = accuracy_score(y_test, y_pred)
+
+    st.subheader("📌 Precisión del modelo")
+
+    st.success(f"Accuracy del modelo: {accuracy:.2f}")
+
+    # Importancia de variables
+
+    importancia = pd.DataFrame({
+        "Variable": X.columns,
+        "Importancia": modelo.feature_importances_
+    })
+
+    importancia = importancia.sort_values(
+        by="Importancia",
+        ascending=False
+    )
+
+    st.subheader("📊 Variables más importantes")
+
+    fig_ml = px.bar(
+        importancia.head(10),
+        x="Importancia",
+        y="Variable",
+        orientation="h",
+        title="Top 10 variables más importantes"
+    )
+
+    st.plotly_chart(
+        fig_ml,
+        use_container_width=True
+    )
+
+    st.info("""
+    El modelo permite identificar factores relacionados con el abandono
+    de clientes en empresas proveedoras de Internet.
+    """)
