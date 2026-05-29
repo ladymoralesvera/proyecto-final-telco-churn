@@ -39,8 +39,8 @@ df = df.dropna()
 # ------------------------------------------------
 
 st.sidebar.image(
-    "https://cdn-icons-png.flaticon.com/512/814/814513.png",
-    width=100
+    "https://images.unsplash.com/photo-1516321318423-f06f85e504b3",
+    use_container_width=True
 )
 
 st.sidebar.title("📡 ISP Analytics")
