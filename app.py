@@ -559,6 +559,4 @@ elif menu == "Acerca del Proyecto":
     Ingeniería en Telecomunicaciones
 
     """)
-
-    st.pyplot(fig)
  
