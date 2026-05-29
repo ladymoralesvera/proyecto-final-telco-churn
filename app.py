@@ -41,7 +41,8 @@ menu = st.sidebar.radio(
         "Inicio",
         "Exploración de Datos",
         "KPIs",
-        "Visualizaciones"
+        "Visualizaciones",
+        "Machine Learning"
     ]
 )
 
