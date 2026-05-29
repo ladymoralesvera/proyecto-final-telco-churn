@@ -240,34 +240,43 @@ elif menu == "Visualizaciones":
         fig4,
         use_container_width=True
     )
-        # ------------------------------------------------
+    # ------------------------------------------------
     # MATRIZ DE CORRELACIÓN
     # ------------------------------------------------
 
     st.subheader("📊 Matriz de Correlación")
 
-    df_corr = df.copy()
+    try:
 
-    columnas_categoricas = df_corr.select_dtypes(
-        include=["object"]
-    ).columns
+        df_corr = df.copy()
 
-    encoder = LabelEncoder()
+        columnas_categoricas = df_corr.select_dtypes(
+            include=["object"]
+        ).columns
 
-    for col in columnas_categoricas:
-        df_corr[col] = encoder.fit_transform(
-            df_corr[col].astype(str)
+        encoder = LabelEncoder()
+
+        for col in columnas_categoricas:
+
+            df_corr[col] = encoder.fit_transform(
+                df_corr[col].astype(str)
+            )
+
+        correlacion = df_corr.corr(numeric_only=True)
+
+        fig_corr, ax = plt.subplots(figsize=(12, 8))
+
+        sns.heatmap(
+            correlacion,
+            cmap="Blues",
+            ax=ax
         )
 
-    correlacion = df_corr.corr()
+        st.pyplot(fig_corr)
 
-    fig, ax = plt.subplots(figsize=(12, 8))
+    except Exception as e:
 
-    sns.heatmap(
-        correlacion,
-        cmap="Blues",
-        ax=ax
-    )  
+        st.error(f"Error en correlación: {e}") 
     # ------------------------------------------------
 # MACHINE LEARNING
 # ------------------------------------------------
