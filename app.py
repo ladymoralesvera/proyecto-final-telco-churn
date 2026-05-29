@@ -16,7 +16,72 @@ st.set_page_config(
     page_icon="📡",
     layout="wide"
 )
+st.markdown("""
+<style>
 
+/* Fondo general */
+
+.stApp {
+    background: linear-gradient(
+        to right,
+        #eef2f3,
+        #dfe9f3
+    );
+}
+
+/* Sidebar */
+
+section[data-testid="stSidebar"] {
+    background-color: #0f172a;
+    color: white;
+}
+
+/* Títulos */
+
+h1, h2, h3, h4 {
+    color: #003366;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Tarjetas métricas */
+
+div[data-testid="metric-container"] {
+    background-color: white;
+    border: 1px solid #dbe2ea;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Botones */
+
+.stButton > button {
+    background-color: #00509e;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    padding: 10px 20px;
+}
+
+.stButton > button:hover {
+    background-color: #003f7d;
+    color: white;
+}
+
+/* Dataframes */
+
+[data-testid="stDataFrame"] {
+    border-radius: 10px;
+}
+
+/* Texto general */
+
+html, body, [class*="css"] {
+    font-family: 'Segoe UI', sans-serif;
+}
+
+</style>
+""", unsafe_allow_html=True)
 # ------------------------------------------------
 # CARGA DE DATOS
 # ------------------------------------------------
