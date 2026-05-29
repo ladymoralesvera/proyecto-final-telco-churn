@@ -38,7 +38,18 @@ df = df.dropna()
 # SIDEBAR
 # ------------------------------------------------
 
-st.sidebar.title("📡 Menú Principal")
+st.sidebar.image(
+    "https://cdn-icons-png.flaticon.com/512/814/814513.png",
+    width=100
+)
+
+st.sidebar.title("📡 ISP Analytics")
+
+st.sidebar.markdown("""
+Sistema de análisis predictivo para empresas proveedoras de Internet.
+""")
+
+st.sidebar.markdown("---")
 
 menu = st.sidebar.radio(
     "Seleccione una opción:",
