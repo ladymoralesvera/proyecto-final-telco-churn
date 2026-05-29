@@ -267,10 +267,8 @@ elif menu == "Visualizaciones":
         correlacion,
         cmap="Blues",
         ax=ax
-    )
-
-    st.pyplot(fig)
-# ------------------------------------------------
+    )  
+    # ------------------------------------------------
 # MACHINE LEARNING
 # ------------------------------------------------
 
@@ -292,10 +290,11 @@ elif menu == "Machine Learning":
         df_ml = df.copy()
 
         # ----------------------------------------
-        # ELIMININAR customerID
+        # ELIMINAR customerID
         # ----------------------------------------
 
         if "customerID" in df_ml.columns:
+
             df_ml.drop(
                 columns=["customerID"],
                 inplace=True
@@ -341,7 +340,7 @@ elif menu == "Machine Learning":
         y = df_ml["Churn"]
 
         # ----------------------------------------
-        # DIVISIÓN TRAIN TEST
+        # TRAIN TEST
         # ----------------------------------------
 
         X_train, X_test, y_train, y_test = train_test_split(
@@ -363,7 +362,7 @@ elif menu == "Machine Learning":
         modelo.fit(X_train, y_train)
 
         # ----------------------------------------
-        # PREDICCIÓN
+        # PREDICCIONES
         # ----------------------------------------
 
         y_pred = modelo.predict(X_test)
@@ -388,8 +387,11 @@ elif menu == "Machine Learning":
         # ----------------------------------------
 
         importancia = pd.DataFrame({
+
             "Variable": X.columns,
+
             "Importancia": modelo.feature_importances_
+
         })
 
         importancia = importancia.sort_values(
@@ -412,10 +414,6 @@ elif menu == "Machine Learning":
             use_container_width=True
         )
 
-        # ----------------------------------------
-        # MENSAJE FINAL
-        # ----------------------------------------
-
         st.info("""
         El modelo Random Forest permite identificar
         patrones asociados al abandono de clientes
@@ -425,8 +423,9 @@ elif menu == "Machine Learning":
     except Exception as e:
 
         st.error(f"Error detectado: {e}")
+
 # ------------------------------------------------
-# PREDICCIÓN MANUAL
+# PREDICCIÓN
 # ------------------------------------------------
 
 elif menu == "Predicción":
@@ -434,8 +433,8 @@ elif menu == "Predicción":
     st.title("📡 Predicción de Abandono")
 
     st.write("""
-    Simulación de predicción de abandono
-    de clientes en empresas ISP.
+    Simulación académica de predicción
+    de abandono de clientes.
     """)
 
     genero = st.selectbox(
@@ -482,17 +481,17 @@ elif menu == "Predicción":
 
     if st.button("Predecir abandono"):
 
-        st.warning("""
-        Simulación académica de predicción.
-        En futuras versiones puede integrarse
-        predicción en tiempo real.
-        """)
-
         if contrato == "Month-to-month" and monthly > 80:
-            st.error("⚠️ Alta probabilidad de abandono")
+
+            st.error(
+                "⚠️ Alta probabilidad de abandono"
+            )
 
         else:
-            st.success("✅ Baja probabilidad de abandono")
+
+            st.success(
+                "✅ Baja probabilidad de abandono"
+            )
 
 # ------------------------------------------------
 # ACERCA DEL PROYECTO
@@ -503,10 +502,11 @@ elif menu == "Acerca del Proyecto":
     st.title("📘 Acerca del Proyecto")
 
     st.markdown("""
+
     ## Proyecto Final Integrador
 
     Aplicación desarrollada en Streamlit
-    para el análisis de clientes ISP y
+    para análisis de clientes ISP y
     predicción de abandono utilizando
     Machine Learning.
 
@@ -536,191 +536,8 @@ elif menu == "Acerca del Proyecto":
 
     Lady Morales Vera
     Ingeniería en Telecomunicaciones
+
     """)
-    # --------------------------------------------
-    # MODELO
-    # --------------------------------------------
 
-    modelo = RandomForestClassifier(
-        n_estimators=100,
-        random_state=42
-    )
-
-    modelo.fit(X_train, y_train)
-
-    # --------------------------------------------
-    # PREDICCIONES
-    # --------------------------------------------
-
-    y_pred = modelo.predict(X_test)
-
-    # --------------------------------------------
-    # ACCURACY
-    # --------------------------------------------
-
-    accuracy = accuracy_score(
-        y_test,
-        y_pred
-    )
-
-    st.subheader("📌 Precisión del modelo")
-
-    st.success(
-        f"Accuracy obtenido: {accuracy:.2f}"
-    )
-
-    # --------------------------------------------
-    # IMPORTANCIA VARIABLES
-    # --------------------------------------------
-
-    importancia = pd.DataFrame({
-
-        "Variable": X.columns,
-
-        "Importancia": modelo.feature_importances_
-
-    })
-
-    importancia = importancia.sort_values(
-        by="Importancia",
-        ascending=False
-    )
-
-    st.subheader("📊 Variables más importantes")
-
-    fig_ml = px.bar(
-        importancia.head(10),
-        x="Importancia",
-        y="Variable",
-        orientation="h",
-        title="Top 10 variables más importantes"
-    )
-
-    st.plotly_chart(
-        fig_ml,
-        use_container_width=True
-    )
-
-    # --------------------------------------------
-    # INTERPRETACIÓN
-    # --------------------------------------------
-
-    st.info("""
-    El modelo Random Forest permite identificar
-    factores críticos asociados al abandono
-    de clientes, apoyando procesos de soporte
-    técnico, fidelización y toma de decisiones
-    estratégicas en empresas ISP.
-    """)
-    # Modelo Random Forest
-
-    modelo = RandomForestClassifier(
-        n_estimators=100,
-        random_state=42
-    )
-
-    modelo.fit(X_train, y_train)
-
-    # Predicciones
-
-    y_pred = modelo.predict(X_test)
-
-    # Accuracy
-
-    accuracy = accuracy_score(
-        y_test,
-        y_pred
-    )
-
-    st.subheader("📌 Precisión del modelo")
-
-    st.success(
-        f"Accuracy del modelo: {accuracy:.2f}"
-    )
-
-    # Importancia de variables
-
-    importancia = pd.DataFrame({
-
-        "Variable": X.columns,
-
-        "Importancia": modelo.feature_importances_
-
-    })
-
-    importancia = importancia.sort_values(
-        by="Importancia",
-        ascending=False
-    )
-
-    st.subheader("📊 Variables más importantes")
-
-    fig_ml = px.bar(
-        importancia.head(10),
-        x="Importancia",
-        y="Variable",
-        orientation="h",
-        title="Top 10 variables más importantes"
-    )
-
-    st.plotly_chart(
-        fig_ml,
-        use_container_width=True
-    )
-
-    st.info("""
-    El modelo permite identificar factores asociados al abandono
-    de clientes en empresas proveedoras de Internet.
-    """)
-    # Modelo Random Forest
-
-    modelo = RandomForestClassifier(
-        n_estimators=100,
-        random_state=42
-    )
-
-    modelo.fit(X_train, y_train)
-
-    # Predicciones
-
-    y_pred = modelo.predict(X_test)
-
-    # Accuracy
-
-    accuracy = accuracy_score(y_test, y_pred)
-
-    st.subheader("📌 Precisión del modelo")
-
-    st.success(f"Accuracy del modelo: {accuracy:.2f}")
-
-    # Importancia de variables
-
-    importancia = pd.DataFrame({
-        "Variable": X.columns,
-        "Importancia": modelo.feature_importances_
-    })
-
-    importancia = importancia.sort_values(
-        by="Importancia",
-        ascending=False
-    )
-
-    st.subheader("📊 Variables más importantes")
-
-    fig_ml = px.bar(
-        importancia.head(10),
-        x="Importancia",
-        y="Variable",
-        orientation="h",
-        title="Top 10 variables más importantes"
-    )
-
-    st.plotly_chart(
-        fig_ml,
-        use_container_width=True
-    )
-
-    st.info("""
-    El modelo permite identificar factores relacionados con el abandono
-    de clientes en empresas proveedoras de Internet.
-    """)
+    st.pyplot(fig)
+ 
