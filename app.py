@@ -5,7 +5,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 # ------------------------------------------------
 # CONFIGURACIÓN GENERAL
 # ------------------------------------------------
@@ -41,13 +42,15 @@ st.sidebar.title("📡 Menú Principal")
 
 menu = st.sidebar.radio(
     "Seleccione una opción:",
-    [
-        "Inicio",
-        "Exploración de Datos",
-        "KPIs",
-        "Visualizaciones",
-        "Machine Learning"
-    ]
+[
+    "Inicio",
+    "Exploración de Datos",
+    "KPIs",
+    "Visualizaciones",
+    "Machine Learning",
+    "Predicción",
+    "Acerca del Proyecto"
+]
 )
 
 # ------------------------------------------------
@@ -237,14 +240,36 @@ elif menu == "Visualizaciones":
         fig4,
         use_container_width=True
     )
+        # ------------------------------------------------
+    # MATRIZ DE CORRELACIÓN
     # ------------------------------------------------
-# MACHINE LEARNING
-# ------------------------------------------------
 
-# ------------------------------------------------
-# MACHINE LEARNING
-# ------------------------------------------------
+    st.subheader("📊 Matriz de Correlación")
 
+    df_corr = df.copy()
+
+    columnas_categoricas = df_corr.select_dtypes(
+        include=["object"]
+    ).columns
+
+    encoder = LabelEncoder()
+
+    for col in columnas_categoricas:
+        df_corr[col] = encoder.fit_transform(
+            df_corr[col].astype(str)
+        )
+
+    correlacion = df_corr.corr()
+
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    sns.heatmap(
+        correlacion,
+        cmap="Blues",
+        ax=ax
+    )
+
+    st.pyplot(fig)
 # ------------------------------------------------
 # MACHINE LEARNING
 # ------------------------------------------------
@@ -324,7 +349,118 @@ elif menu == "Machine Learning":
         test_size=0.2,
         random_state=42
     )
+# ------------------------------------------------
+# PREDICCIÓN MANUAL
+# ------------------------------------------------
 
+elif menu == "Predicción":
+
+    st.title("📡 Predicción de Abandono")
+
+    st.write("""
+    Simulación de predicción de abandono
+    de clientes en empresas ISP.
+    """)
+
+    genero = st.selectbox(
+        "Género",
+        ["Female", "Male"]
+    )
+
+    senior = st.selectbox(
+        "Adulto mayor",
+        [0, 1]
+    )
+
+    tenure = st.slider(
+        "Antigüedad del cliente",
+        1,
+        72,
+        12
+    )
+
+    monthly = st.slider(
+        "Facturación mensual",
+        20,
+        150,
+        70
+    )
+
+    contrato = st.selectbox(
+        "Tipo de contrato",
+        [
+            "Month-to-month",
+            "One year",
+            "Two year"
+        ]
+    )
+
+    internet = st.selectbox(
+        "Servicio de Internet",
+        [
+            "DSL",
+            "Fiber optic",
+            "No"
+        ]
+    )
+
+    if st.button("Predecir abandono"):
+
+        st.warning("""
+        Simulación académica de predicción.
+        En futuras versiones puede integrarse
+        predicción en tiempo real.
+        """)
+
+        if contrato == "Month-to-month" and monthly > 80:
+            st.error("⚠️ Alta probabilidad de abandono")
+
+        else:
+            st.success("✅ Baja probabilidad de abandono")
+
+# ------------------------------------------------
+# ACERCA DEL PROYECTO
+# ------------------------------------------------
+
+elif menu == "Acerca del Proyecto":
+
+    st.title("📘 Acerca del Proyecto")
+
+    st.markdown("""
+    ## Proyecto Final Integrador
+
+    Aplicación desarrollada en Streamlit
+    para el análisis de clientes ISP y
+    predicción de abandono utilizando
+    Machine Learning.
+
+    ### Tecnologías utilizadas
+
+    - Python
+    - Streamlit
+    - Pandas
+    - Plotly
+    - Scikit-learn
+    - Random Forest
+
+    ### Área de aplicación
+
+    Telecomunicaciones, soporte técnico
+    y atención al cliente en empresas
+    proveedoras de Internet.
+
+    ### Objetivo
+
+    Identificar patrones relacionados
+    con abandono de clientes para
+    mejorar procesos de fidelización
+    y soporte operativo.
+
+    ### Autor
+
+    Lady Morales Vera
+    Ingeniería en Telecomunicaciones
+    """)
     # --------------------------------------------
     # MODELO
     # --------------------------------------------
