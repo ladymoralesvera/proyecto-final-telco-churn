@@ -89,19 +89,29 @@ if menu == "Inicio":
             width=300
         )
 
-    st.markdown("---")
+    st.markdown("""
+<div style='text-align: center;'>
 
-    st.write("""
-    ## Proyecto Final Integrador
+<h2>Proyecto Final Integrador</h2>
 
-    Aplicación desarrollada en Streamlit para el análisis
-    de clientes ISP y predicción de abandono utilizando
-    técnicas de Ciencia de Datos y Machine Learning.
+<p style='font-size:18px;'>
 
-    El sistema permite explorar información,
-    visualizar métricas relevantes y analizar
-    factores asociados al churn de clientes.
-    """)
+Aplicación desarrollada en Streamlit para el análisis
+de clientes ISP y predicción de abandono utilizando
+técnicas de Ciencia de Datos y Machine Learning.
+
+</p>
+
+<p style='font-size:17px;'>
+
+El sistema permite explorar información,
+visualizar métricas relevantes y analizar
+factores asociados al churn de clientes.
+
+</p>
+
+</div>
+""", unsafe_allow_html=True)
 # ------------------------------------------------
 # EXPLORACIÓN DE DATOS
 # ------------------------------------------------
