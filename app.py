@@ -280,75 +280,151 @@ elif menu == "Machine Learning":
 
     st.write("""
     Modelo de Machine Learning orientado a la predicción
-    de abandono de clientes en empresas proveedoras
-    de Internet.
+    de abandono de clientes en empresas proveedoras de Internet.
     """)
 
-    # --------------------------------------------
-    # COPIA DEL DATASET
-    # --------------------------------------------
+    try:
 
-    df_ml = df.copy()
+        # ----------------------------------------
+        # COPIA DEL DATASET
+        # ----------------------------------------
 
-    # --------------------------------------------
-    # ELIMINAR customerID
-    # --------------------------------------------
+        df_ml = df.copy()
 
-    if "customerID" in df_ml.columns:
-        df_ml.drop(
-            columns=["customerID"],
-            inplace=True
+        # ----------------------------------------
+        # ELIMININAR customerID
+        # ----------------------------------------
+
+        if "customerID" in df_ml.columns:
+            df_ml.drop(
+                columns=["customerID"],
+                inplace=True
+            )
+
+        # ----------------------------------------
+        # LIMPIAR TotalCharges
+        # ----------------------------------------
+
+        df_ml["TotalCharges"] = pd.to_numeric(
+            df_ml["TotalCharges"],
+            errors="coerce"
         )
 
-    # --------------------------------------------
-    # LIMPIAR TotalCharges
-    # --------------------------------------------
+        # ----------------------------------------
+        # ELIMINAR NULOS
+        # ----------------------------------------
 
-    df_ml["TotalCharges"] = pd.to_numeric(
-        df_ml["TotalCharges"],
-        errors="coerce"
-    )
+        df_ml.dropna(inplace=True)
 
-    # --------------------------------------------
-    # ELIMINAR NULOS
-    # --------------------------------------------
+        # ----------------------------------------
+        # CODIFICAR VARIABLES
+        # ----------------------------------------
 
-    df_ml.dropna(inplace=True)
+        columnas_categoricas = df_ml.select_dtypes(
+            include=["object"]
+        ).columns
 
-    # --------------------------------------------
-    # CONVERTIR VARIABLES CATEGÓRICAS
-    # --------------------------------------------
+        for col in columnas_categoricas:
 
-    columnas_categoricas = df_ml.select_dtypes(
-        include=["object"]
-    ).columns
+            encoder = LabelEncoder()
 
-    for col in columnas_categoricas:
+            df_ml[col] = encoder.fit_transform(
+                df_ml[col].astype(str)
+            )
 
-        encoder = LabelEncoder()
+        # ----------------------------------------
+        # VARIABLES
+        # ----------------------------------------
 
-        df_ml[col] = encoder.fit_transform(
-            df_ml[col].astype(str)
+        X = df_ml.drop("Churn", axis=1)
+
+        y = df_ml["Churn"]
+
+        # ----------------------------------------
+        # DIVISIÓN TRAIN TEST
+        # ----------------------------------------
+
+        X_train, X_test, y_train, y_test = train_test_split(
+            X,
+            y,
+            test_size=0.2,
+            random_state=42
         )
 
-    # --------------------------------------------
-    # VARIABLES X e y
-    # --------------------------------------------
+        # ----------------------------------------
+        # MODELO
+        # ----------------------------------------
 
-    X = df_ml.drop("Churn", axis=1)
+        modelo = RandomForestClassifier(
+            n_estimators=100,
+            random_state=42
+        )
 
-    y = df_ml["Churn"]
+        modelo.fit(X_train, y_train)
 
-    # --------------------------------------------
-    # DIVISIÓN TRAIN TEST
-    # --------------------------------------------
+        # ----------------------------------------
+        # PREDICCIÓN
+        # ----------------------------------------
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X,
-        y,
-        test_size=0.2,
-        random_state=42
-    )
+        y_pred = modelo.predict(X_test)
+
+        # ----------------------------------------
+        # ACCURACY
+        # ----------------------------------------
+
+        accuracy = accuracy_score(
+            y_test,
+            y_pred
+        )
+
+        st.subheader("📌 Precisión del Modelo")
+
+        st.success(
+            f"Accuracy obtenido: {accuracy:.2f}"
+        )
+
+        # ----------------------------------------
+        # IMPORTANCIA VARIABLES
+        # ----------------------------------------
+
+        importancia = pd.DataFrame({
+            "Variable": X.columns,
+            "Importancia": modelo.feature_importances_
+        })
+
+        importancia = importancia.sort_values(
+            by="Importancia",
+            ascending=False
+        )
+
+        st.subheader("📊 Variables más importantes")
+
+        fig_ml = px.bar(
+            importancia.head(10),
+            x="Importancia",
+            y="Variable",
+            orientation="h",
+            title="Top 10 variables más importantes"
+        )
+
+        st.plotly_chart(
+            fig_ml,
+            use_container_width=True
+        )
+
+        # ----------------------------------------
+        # MENSAJE FINAL
+        # ----------------------------------------
+
+        st.info("""
+        El modelo Random Forest permite identificar
+        patrones asociados al abandono de clientes
+        en empresas proveedoras de Internet.
+        """)
+
+    except Exception as e:
+
+        st.error(f"Error detectado: {e}")
 # ------------------------------------------------
 # PREDICCIÓN MANUAL
 # ------------------------------------------------
