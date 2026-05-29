@@ -73,7 +73,7 @@ if menu == "Inicio":
     st.title("📡 ISP Analytics Dashboard")
     st.image(
         "https://images.unsplash.com/photo-1521791136064-7986c2920216",
-         width=700
+         width=500
     )
 
     st.subheader(
