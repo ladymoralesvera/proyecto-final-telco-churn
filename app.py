@@ -72,9 +72,9 @@ if menu == "Inicio":
 
     st.title("📡 ISP Analytics Dashboard")
     st.image(
-    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31",
-    use_container_width=True
-    )    
+        "https://images.unsplash.com/photo-1521791136064-7986c2920216",
+        use_container_width=True
+    )
 
     st.subheader(
         "Predicción de abandono de clientes en empresas proveedoras de Internet"
