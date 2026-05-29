@@ -16,6 +16,15 @@ st.set_page_config(
     page_icon="📡",
     layout="wide"
 )
+st.markdown("""
+<style>
+
+h1, h2, h3 {
+    color: #003366;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+</style>
 # ------------------------------------------------
 # CARGA DE DATOS
 # ------------------------------------------------
